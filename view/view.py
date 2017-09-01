@@ -22,3 +22,16 @@ class View(object):
             for y in range(0, 9):
                 print(x, y, possibleList[x][y])
 
+    def show_fill_in_number(self, fill_in_number):
+
+        print("当前已填入数字个数为:%s" % (fill_in_number))
+
+    def show_result_sudoku(self, sudoku):
+        print("sudoku的求解结果为:")
+
+        for xCount in range(0,9):
+            showStr = ""
+            for yCount in range(0,9):
+                showStr = showStr + str(sudoku[xCount][yCount]) + " "
+            print(showStr)
+

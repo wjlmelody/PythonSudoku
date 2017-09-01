@@ -15,6 +15,14 @@ class Controller(object):
 
         possibleList = self.model.possible_list_sudoku(sudoku)
         # self.view.show_possible_list_sudoku(possibleList);
+        self.view.show_fill_in_number(self.model.fill_in_number(possibleList))
 
-        possibleList2 = self.model.analyse_sudoku(possibleList)
-        self.view.show_possible_list_sudoku(possibleList2);
+        while True:
+            possibleList = self.model.analyse_sudoku(possibleList)
+            # self.view.show_possible_list_sudoku(possibleList2);
+            fill_in_number = self.model.fill_in_number(possibleList)
+            self.view.show_fill_in_number(fill_in_number)
+            if fill_in_number == 81:
+                result_sudoku = self.model.result_sudoku(possibleList)
+                self.view.show_result_sudoku(result_sudoku);
+                break

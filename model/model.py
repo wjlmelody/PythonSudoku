@@ -54,35 +54,95 @@ class Model(object):
         for xCount in range(0,9):
             for yCount in range(0,9):
                 if len(guessList[xCount][yCount]) != 1:
-                    guessList[xCount][yCount] = self.analyse_sudoku_sub(guessList, xCount, yCount)
+                    guessList[xCount][yCount] = self.exclusion_method_sudoku_sub(guessList, xCount, yCount)
+        for xCount in range(0,9):
+            for yCount in range(0,9):
+                if len(guessList[xCount][yCount]) != 1:
+                    guessList[xCount][yCount] = self.remaining_method_sudoku_sub(guessList, xCount, yCount)
         return guessList
 
-    def analyse_sudoku_sub(self, guessList, xCount, yCount):
+    def exclusion_method_sudoku_sub(self, guessList, xCount, yCount):
+        # 摒除法
+        possibleUnionX = self.exclusion_method_x(guessList, yCount)
+        possibleUnionY = self.exclusion_method_y(guessList, xCount)
+        possibleUnionXY = self.exclusion_method_xy(guessList, xCount, yCount)
+
+        resultList = guessList[xCount][yCount]
+
+        resultList = self.exclusion_method_output(resultList, possibleUnionX)
+        resultList = self.exclusion_method_output(resultList, possibleUnionY)
+        resultList = self.exclusion_method_output(resultList, possibleUnionXY)
+
+        return resultList
+
+    def exclusion_method_x(self, guessList, yCount):
         possibleUnion = []
-
-        for y in range(0, 9):
-            possibleUnion.extend(guessList[xCount][y])
-
         for x in range(0, 9):
             possibleUnion.extend(guessList[x][yCount])
+        return possibleUnion
+
+    def exclusion_method_y(self, guessList, xCount):
+        possibleUnion = []
+        for y in range(0, 9):
+            possibleUnion.extend(guessList[xCount][y])
+        return possibleUnion
+
+    def exclusion_method_xy(self, guessList, xCount, yCount):
+        possibleUnion = []
+        xDivmodNumber = self.divmod_number(xCount)
+        yDivmodNumber = self.divmod_number(yCount)
+        for x in range(xDivmodNumber, xDivmodNumber + 3):
+            for y in range(yDivmodNumber, yDivmodNumber + 3):
+                possibleUnion.extend(guessList[x][y])
+        return possibleUnion
+
+    def exclusion_method_output(self, resultlist, possibleUnion):
+        universalSet = set([1, 2, 3, 4, 5, 6, 7, 8, 9])
+        possibleUnionSet = set(possibleUnion)
+        candidateResult = universalSet - possibleUnionSet
+        if len(candidateResult) > 0:
+            return list(candidateResult & set(resultlist))
+        else:
+            return resultlist
+
+    def remaining_method_sudoku_sub(self, guessList, xCount, yCount):
+        universalSet = set([1, 2, 3, 4, 5, 6, 7, 8, 9])
+        resultMinus = []
+
+        for y in range(0,9):
+            if len(guessList[xCount][y]) == 1:
+                resultMinus.append(guessList[xCount][y][0])
+
+        for x in range(0,9):
+            if len(guessList[x][yCount]) == 1:
+                resultMinus.append(guessList[x][yCount][0])
 
         xDivmodNumber = self.divmod_number(xCount)
         yDivmodNumber = self.divmod_number(yCount)
 
         for x in range(xDivmodNumber, xDivmodNumber + 3):
             for y in range(yDivmodNumber, yDivmodNumber + 3):
-                possibleUnion.extend(guessList[x][y])
+                if len(guessList[x][y]) == 1:
+                    resultMinus.append(guessList[x][y][0])
 
-        universalSet = set([1, 2, 3, 4, 5, 6, 7, 8, 9])
-        possibleUnionSet = set(possibleUnion)
-        candidateResult = universalSet - possibleUnionSet
+        resultMinusSet = set(resultMinus)
+        return list((universalSet - resultMinusSet) & set(guessList[xCount][yCount]))
 
-        if len(candidateResult) > 0:
-            return list(candidateResult & set(guessList[xCount][yCount]))
-        else:
-            return guessList[xCount][yCount]
+    def fill_in_number(self, possibleList):
+        result = 0
+        for xCount in range(0,9):
+            for yCount in range(0,9):
+                if len(possibleList[xCount][yCount]) == 1:
+                    result += 1
+        return result
 
-    # def exclusion_method(self, guessList, xCount, yCount):
-    #     # 摒除法
-    #
-    # def exclusion_method_x(self, guessList, xCount, yCount):
+    def result_sudoku(self, possible_list):
+        result = []
+        for xCount in range(0,9):
+            resultSub = []
+            for yCount in range(0,9):
+                resultSub.append(possible_list[xCount][yCount][0])
+            result.append(resultSub)
+
+        return result
+
