@@ -10,12 +10,11 @@ class Controller(object):
         self.view = View()
 
     def run(self):
-        sukudo = self.model.get_sukudo();
-        self.view.show_sukudo(sukudo);
+        sudoku = self.model.get_sudoku();
+        self.view.show_sudoku(sudoku);
 
-        # try:
-        #     index = int(n)
-        #     quote = self.model.get_quote(index)
-        #     self.view.show(quote)
-        # except ValueError as err:
-        #     self.view.error('不合法的索引值')
+        possibleList = self.model.possible_list_sudoku(sudoku)
+        # self.view.show_possible_list_sudoku(possibleList);
+
+        possibleList2 = self.model.analyse_sudoku(possibleList)
+        self.view.show_possible_list_sudoku(possibleList2);
