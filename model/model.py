@@ -5,7 +5,7 @@ class Model(object):
     '''模型层'''
 
     def get_sudoku(self):
-        return Sudoku;
+        return Sudoku2;
 
     def possible_list_sudoku(self, sudoku):
         result = []
